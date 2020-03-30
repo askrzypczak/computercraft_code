@@ -1,6 +1,6 @@
 print "installing package"
 
-local files = {"digger.lua", "movement.lua"}
+local files = {"digger.lua", "movement.lua", "refuel.lua", "harvester.lua"}
 
 for key, filename in pairs(files) do
   if fs.exists("/" .. filename) then

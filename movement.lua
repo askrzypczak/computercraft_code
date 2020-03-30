@@ -46,9 +46,9 @@ local function forward()
 end
 
 
-local function createMovementFunction(faceIfGreater, faceIfLesser)
+local function createMovementFunction(faceIfGreater, faceIfLesser, getCoord)
   local function movementFunction(dist, callbacks)
-    local goal = x + dist
+    local goal = getCoord() + dist
 
     if dist > 0 then
       faceDir(faceIfGreater)
@@ -56,8 +56,10 @@ local function createMovementFunction(faceIfGreater, faceIfLesser)
       faceDir(faceIfLesser)
     end
     if dist ~= 0 then
-      while x ~= goal do
-        for i, callback in pairs(callbacks) do callback() end
+      while getCoord() ~= goal do
+        if callbacks then
+          for i, callback in pairs(callbacks) do callback() end
+        end
         forward()
       end
     end
@@ -66,24 +68,78 @@ local function createMovementFunction(faceIfGreater, faceIfLesser)
   return movementFunction
 end
 
-local moveX = createMovementFunction(0, 2)
-local moveY = createMovementFunction(1, 3)
+local moveX = createMovementFunction(0, 2, function() return x end)
+local moveY = createMovementFunction(1, 3, function() return y end)
 
-local function moveZ(dist, dig, callbacks)
+local function moveZ(dist, callbacks)
   local goal = z + dist
 
   if dist > 0 then
-    for i = 1, dist do
-      if dig then dig("up") end
+    while z ~= goal do
+      if callbacks then
+        for i, callback in pairs(callbacks) do callback("up") end
+      end
       up()
     end
   elseif dist < 0 then
     while z ~= goal do
-      for i, callback in pairs(callbacks) do callback() end
-      if dig then dig("down") end
+      if callbacks then
+        for i, callback in pairs(callbacks) do callback("down") end
+      end
       down()
     end
   end
 end
 
-return { movement = { moveX = moveX, moveY = moveY, moveZ = moveZ } }
+local function moveTo(targetX, targetY, targetZ, callbacks)
+  moveX(targetX - x, callbacks)
+  moveY(targetY - y, callbacks)
+  moveZ(targetZ - z, callbacks)
+end
+local function moveToBackwards(targetX, targetY, targetZ, callbacks)  
+  moveZ(targetZ - z, callbacks)
+  moveY(targetY - y, callbacks)
+  moveX(targetX - x, callbacks)
+end
+
+local function coverMove(xVector, yVector, zVector, callbacks)
+
+  local xSign, ySign ,zSign
+  if xVector > 0 then xSign = 1 else xSign = -1 end
+  if yVector > 0 then ySign = 1 else ySign = -1 end
+  if zVector > 0 then zSign = 1 else zSign = -1 end
+
+  local xMagnitude = math.abs(xVector)
+  local yMagnitude = math.abs(yVector)
+  local zMagnitude = math.abs(zVector)
+
+  for zCount = 1, zMagnitude do
+    for yCount = 1, yMagnitude do
+
+      moveX(xSign * xMagnitude, callbacks)
+
+      if yCount < yMagnitude then
+        xSign = xSign * -1
+        moveY(ySign, callbacks)
+      end
+    end
+
+    if zCount < zMagnitude then
+      ySign = ySign * -1
+      xSign = xSign * -1
+      moveZ(zSign, callbacks)
+    end
+  end
+end
+
+return {
+  movement = {
+    moveX = moveX,
+    moveY = moveY,
+    moveZ = moveZ,
+    moveTo = moveTo,
+    moveToBackwards = moveToBackwards,
+    coverMove = coverMove,
+    faceDir = faceDir
+  }
+}
