@@ -1,3 +1,5 @@
+local movement = dofile("movement.lua").movement
+
 local tArgs = {...}
 
 local blacklistItems = {
@@ -14,54 +16,6 @@ local digSlot = 2
 local fuelSlot = 1
 
 local fuelType
-
-local x, y, z = 0, 0, 0
-
-local face = 0
-
-local function turnRight()
-  turtle.turnRight()
-  if face >= 3 then face = 0
-  else face = face + 1
-  end
-end
-
-local function turnLeft()
-  turtle.turnLeft()
-  if face == 0 then face = 3
-  else face = face - 1
-  end
-end
-
-local function faceDir(dir)
-  if dir == 3 and face == 0 then turnLeft()
-  elseif dir - face == -1 then turnLeft()
-  else while face ~= dir do turnRight() end
-  end
-end
-
-local function forward()
-  if turtle.forward() then 
-    if face == 0 then x = x + 1
-    elseif face == 1 then y = y + 1
-    elseif face == 2 then x = x - 1
-    elseif face == 3 then y = y - 1
-    end
-  else print "error moving forward!"
-  end
-end
-
-local function up()
-  if turtle.up() then z = z + 1
-  else print "error moving up!"
-  end
-end
-
-local function down()
-  if turtle.down() then z = z - 1
-  else print "error moving down!"
-  end
-end
 
 local function checkAndRefuel()
   local level = turtle.getFuelLevel()
@@ -127,57 +81,6 @@ local function dig(direction)
   return handled
 end
 
-local function moveX(dist, doDig)
-  local goal = x + dist
-
-  if dist > 0 then
-    faceDir(0)
-  elseif dist < 0 then
-    faceDir(2)
-  end
-  if dist ~= 0 then
-    while x ~= goal do
-      checkAndRefuel()
-      if doDig then dig() end
-      forward()
-    end
-  end
-end
-
-local function moveY(dist, doDig)
-  local goal = y + dist
-
-  if dist > 0 then
-    faceDir(1)
-  elseif dist < 0 then
-    faceDir(3)
-  end
-  if dist ~= 0 then
-    while y ~= goal do
-      checkAndRefuel()
-      if doDig then dig() end
-      forward()
-    end
-  end
-end
-
-local function moveZ(dist, doDig)
-  local goal = z + dist
-
-  if dist > 0 then
-    for i = 1, dist do
-      if doDig then dig("up") end
-      up()
-    end
-  elseif dist < 0 then
-    while z ~= goal do
-      checkAndRefuel()
-      if doDig then dig("down") end
-      down()
-    end
-  end
-end
-
 local function fullDig()
   local xSign, ySign ,zSign
   if xTarget > 0 then xSign = 1 else xSign = -1 end
@@ -191,27 +94,25 @@ local function fullDig()
   for zCount = 1, zMagnitude do
     for yCount = 1, yMagnitude do
 
-      moveX(xSign * xMagnitude, true)
+      movement.moveX(xSign * xMagnitude, {dig, checkAndRefuel})
 
       if yCount < yMagnitude then
         xSign = xSign * -1
-        moveY(ySign, true)
+        movement.moveY(ySign, {dig, checkAndRefuel})
       end
     end
 
     if zCount < zMagnitude then
       ySign = ySign * -1
       xSign = xSign * -1
-      moveZ(zSign, true)
+      movement.moveZ(zSign, dig, {checkAndRefuel})
     end
   end
 
-  moveX(xTarget * -1)
-  moveY(yTarget * -1)
-  moveZ(zTarget * -1)
+  movement.moveX(xTarget * -1)
+  movement.moveY(yTarget * -1)
+  movement.moveZ(zTarget * -1)
 end
-
-
 
 
 print "initializing..."
