@@ -30,8 +30,7 @@ local function checkAndRefuel()
       )
     end
 
-    local success = turtle.refuel(1)
-    
+    turtle.refuel(1)
     while turtle.getFuelLevel() < 1 do
       print("need fuel")
       os.sleep(5)
@@ -41,7 +40,7 @@ local function checkAndRefuel()
         print(string.format("using %s as fuel", fuelDetail.name))
       end
 
-      turtle.refuel(1)
+      turtle.refuel()
     end
 
     turtle.select(oldSlot)
