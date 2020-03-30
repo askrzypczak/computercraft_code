@@ -39,22 +39,76 @@ local fuel = dofile("refuel.lua").new({fuelSlot = 1})
 
 local seedSlot = 2
 local plantType = "minecraft:wheat"
+local seedType = "minecraft:wheat_seeds"
 local readyValue = 7
 
+local function onEachInventory(action)
+  for i = 3, 16 do
+    if action(i, turtle.getItemDetail(i)) then break end
+  end
+end
+
+local function selectSeeds()
+  turtle.select(seedSlot)
+  local item = turtle.getItemDetail()
+
+  if item and item.name ~= seedType then
+    turtle.drop()
+    item = nil
+  end
+
+  if item == nil then
+    onEachInventory(
+      function(i, inventoryItem)
+        if inventoryItem.name == seedType then
+          turtle.select(i)
+          turtle.transferTo(seedSlot)
+          turtle.select(seedSlot)
+          return true
+        end
+      end
+    )
+  end
+end
+
 local function harvest()
-  local itemBelow = turtle.inspectDown()
-  if not itemBelow or itemBelow.name == plantType and itemBelow.state.age == readyValue then
+  local isItem, itemBelow = turtle.inspectDown()
+  if not isItem or itemBelow.name == plantType and itemBelow.state.age == readyValue then
     turtle.digDown()
+    selectSeeds()
     turtle.placeDown()
   end
 end
 
-movement.moveTo(startX, startY, startZ, {fuel.checkAndRefuel})
+local function waitForGrowth()
+  os.sleep(24 * 60)
+end
+
+while true do
+  print "harvesting..."
+  movement.moveTo(startX, startY, startZ, {fuel.checkAndRefuel})
 
 
-local xTarget, yTarget = endX - startX, endY - startY
+  local xTarget, yTarget = endX - startX, endY - startY
 
-movement.coverMove(xTarget, yTarget, 1, {harvest, fuel.checkAndRefuel})
+  movement.coverMove(xTarget, yTarget, 1, {harvest, fuel.checkAndRefuel})
+  harvest() --last block will be the endpoint, callbacks wont be called after move, only before.
 
-movement.moveTo(startX, startY, startZ, {fuel.checkAndRefuel})
-movement.moveTo(0, 0, 0, {fuel.checkAndRefuel})
+  print "done!"
+  movement.moveTo(startX, startY, startZ, {fuel.checkAndRefuel})
+  movement.moveTo(0, 0, 0, {fuel.checkAndRefuel})
+  movement.faceDir(0)
+
+  print "dumping items"
+  onEachInventory(
+    function(i, inventoryItem)
+      if inventoryItem.name == seedType then
+        turtle.select(i)
+        turtle.dropDown()
+      end
+    end
+  )
+
+  print "waiting for growth..."
+  waitForGrowth()
+end
