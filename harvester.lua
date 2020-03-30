@@ -12,7 +12,7 @@ if #tArgs == 0 or tArgs[1] == "help" then
     Forward is positive x, Right is positive y, Up is positive z
     bot will then clear out full plane described by its position and the vector
 
-    there must be a clear path from (0,0,0) to (x1,y1,z1), pathing down x, then y, then z
+    there must be a clear path from (0,0,0) to (x1,y1,z1), pathing down Z, then y, then x
     
     fuel should be placed in slot 1, it will use the fuel to move.
     If the bot does run out of fuel, you will need to add more fuel to slot 1.
@@ -44,7 +44,8 @@ local readyValue = 7
 
 local function onEachInventory(action)
   for i = 3, 16 do
-    if action(i, turtle.getItemDetail(i)) then break end
+    local item = turtle.getItemDetail(i)
+    if item and action(i, item) then break end
   end
 end
 
@@ -96,13 +97,13 @@ while true do
 
   print "done!"
   movement.moveTo(startX, startY, startZ, {fuel.checkAndRefuel})
-  movement.moveTo(0, 0, 0, {fuel.checkAndRefuel})
+  movement.moveToBackwards(0, 0, 0, {fuel.checkAndRefuel})
   movement.faceDir(0)
 
   print "dumping items"
   onEachInventory(
     function(i, inventoryItem)
-      if inventoryItem.name == seedType then
+      if inventoryItem.name ~= seedType then
         turtle.select(i)
         turtle.dropDown()
       end

@@ -96,6 +96,11 @@ local function moveTo(targetX, targetY, targetZ, callbacks)
   moveY(targetY - y, callbacks)
   moveZ(targetZ - z, callbacks)
 end
+local function moveToBackwards(targetX, targetY, targetZ, callbacks)  
+  moveZ(targetZ - z, callbacks)
+  moveY(targetY - y, callbacks)
+  moveX(targetX - x, callbacks)
+end
 
 local function coverMove(xVector, yVector, zVector, callbacks)
 
@@ -133,6 +138,7 @@ return {
     moveY = moveY,
     moveZ = moveZ,
     moveTo = moveTo,
+    moveToBackwards = moveToBackwards,
     coverMove = coverMove,
     faceDir = faceDir
   }
