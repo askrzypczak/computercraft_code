@@ -46,9 +46,9 @@ local function forward()
 end
 
 
-local function createMovementFunction(faceIfGreater, faceIfLesser)
+local function createMovementFunction(faceIfGreater, faceIfLesser, getCoord)
   local function movementFunction(dist, callbacks)
-    local goal = x + dist
+    local goal = getCoord() + dist
 
     if dist > 0 then
       faceDir(faceIfGreater)
@@ -56,8 +56,10 @@ local function createMovementFunction(faceIfGreater, faceIfLesser)
       faceDir(faceIfLesser)
     end
     if dist ~= 0 then
-      while x ~= goal do
-        for i, callback in pairs(callbacks) do callback() end
+      while getCoord() ~= goal do
+        if callbacks then
+          for i, callback in pairs(callbacks) do callback() end
+        end
         forward()
       end
     end
@@ -66,24 +68,41 @@ local function createMovementFunction(faceIfGreater, faceIfLesser)
   return movementFunction
 end
 
-local moveX = createMovementFunction(0, 2)
-local moveY = createMovementFunction(1, 3)
+local moveX = createMovementFunction(0, 2, function() return x end)
+local moveY = createMovementFunction(1, 3, function() return y end)
 
-local function moveZ(dist, dig, callbacks)
+local function moveZ(dist, callbacks)
   local goal = z + dist
 
   if dist > 0 then
-    for i = 1, dist do
-      if dig then dig("up") end
+    while z ~= goal do
+      if callbacks then
+        for i, callback in pairs(callbacks) do callback("up") end
+      end
       up()
     end
   elseif dist < 0 then
     while z ~= goal do
-      for i, callback in pairs(callbacks) do callback() end
-      if dig then dig("down") end
+      if callbacks then
+        for i, callback in pairs(callbacks) do callback("down") end
+      end
       down()
     end
   end
 end
 
-return { movement = { moveX = moveX, moveY = moveY, moveZ = moveZ } }
+local function moveTo(targetX, targetY, targetZ, callbacks)
+  moveX(targetX - x, callbacks)
+  moveY(targetY - y, callbacks)
+  moveZ(targetZ - z, callbacks)
+end
+
+return {
+  movement = {
+    moveX = moveX,
+    moveY = moveY,
+    moveZ = moveZ,
+    moveTo = moveTo,
+    faceDir = faceDir
+  }
+}

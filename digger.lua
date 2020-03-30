@@ -1,4 +1,5 @@
 local movement = dofile("movement.lua").movement
+local fuel = dofile("refuel.lua").new({fuelSlot = 1})
 
 local tArgs = {...}
 
@@ -11,40 +12,11 @@ local blacklistItems = {
   ["minecraft:granite"] = true
 }
 
-local xTarget, yTarget, zTarget = 0, 1, 1
-
+local xTarget, yTarget, zTarget
 
 local storageSlots = {3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16}
 local digSlot = 2
-local fuelSlot = 1
 
-local fuelType
-
-local function checkAndRefuel()
-  local level = turtle.getFuelLevel()
-  if level == "unlimited" then return end
-
-  if level < 1 then
-    local oldSlot = turtle.getSelectedSlot()
-    turtle.select(fuelSlot)
-
-    local success = turtle.refuel()
-    if not success then print("need fuel") end
-    while turtle.getFuelLevel() < 1 do
-
-      local fuelDetail = turtle.getItemDetail(fuelSlot)
-      if fuelDetail ~= nil then
-        fuelType = fuelDetail.name
-        print(string.format("using %s as fuel", fuelDetail.name))
-      end
-
-      turtle.refuel()
-      os.sleep(5)
-    end
-
-    turtle.select(oldSlot)
-  end
-end
 
 local function dig(direction)
   local handled = false
@@ -67,8 +39,8 @@ local function dig(direction)
       handled = true
     end
     if not handled then
-      if digDetail == fuelType and turtle.getItemSpace(fuelSlot) > 0 then
-        turtle.transferTo(fuelSlot)
+      if digDetail == fuel.getFuelType() and turtle.getItemSpace(fuel.getFuelSlot()) > 0 then
+        turtle.transferTo(fuel.getFuelSlot())
         handled = true
       else
         for key, storage in pairs(storageSlots) do
@@ -97,25 +69,23 @@ local function fullDig()
   for zCount = 1, zMagnitude do
     for yCount = 1, yMagnitude do
 
-      movement.moveX(xSign * xMagnitude, {dig, checkAndRefuel})
+      movement.moveX(xSign * xMagnitude, {dig, fuel.checkAndRefuel})
 
       if yCount < yMagnitude then
         xSign = xSign * -1
-        movement.moveY(ySign, {dig, checkAndRefuel})
+        movement.moveY(ySign, {dig, fuel.checkAndRefuel})
       end
     end
 
     if zCount < zMagnitude then
       ySign = ySign * -1
       xSign = xSign * -1
-      movement.moveZ(zSign, dig, {checkAndRefuel})
+      movement.moveZ(zSign, {dig, fuel.checkAndRefuel})
     end
   end
 
-  --go back to start, no digging.
-  movement.moveX(xTarget * xSign * -1)
-  movement.moveY(yTarget * ySign * -1)
-  movement.moveZ(zTarget * zSign * -1)
+  movement.moveTo(0, 0, 0)
+  movement.faceDir(0)
 end
 
 
@@ -138,17 +108,8 @@ if #tArgs == 0 or tArgs[1] == "help" then
   return
 end
 
-xTarget, yTarget, zTarget = tonumber(tArgs[1]), tonumber(tArgs[2]), tonumber(tArgs[3])
+xTarget, yTarget, zTarget = tonumber(tArgs[1]) or 0, tonumber(tArgs[2]) or 1, tonumber(tArgs[3]) or 1
 print("target: ", xTarget, yTarget, zTarget)
-
-
-turtle.select(fuelSlot)
-local fuelItem = turtle.getItemDetail(fuelSlot)
-if fuelItem == nil then
-  error(string.format("no fuel item provided in slot %i", fuelSlot))
-end
-print(string.format("using %s as fuel", fuelItem.name))
-fuelType = fuelItem.name
 
 
 local digItem = turtle.getItemDetail(digSlot)
