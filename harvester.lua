@@ -20,6 +20,8 @@ if #tArgs == 0 or tArgs[1] == "help" then
     grass seeds should be placed in slot 2.
 
     the turtle will need a hoe. if the current turtle does not, use the command line "harvester equip" when a hoe is in slot 1
+
+    maintenance: you will need to periodically remove seeds from the inventory, as it will never drop them
     ]]
   )
 
@@ -34,7 +36,8 @@ end
 local startX, startY, startZ, endX, endY = tonumber(tArgs[3]) or 0, tonumber(tArgs[4]) or 0, tonumber(tArgs[5]) or 0, tonumber(tArgs[1]) or 0, tonumber(tArgs[2]) or 0
 
 local movement = dofile("movement.lua").movement
-local fuel = dofile("refuel.lua").new({fuelSlot = 1})
+local inventory = dofile("inventory.lua").new({startIndex=2, endIndex=16}) --seeds count as inventory
+local fuel = dofile("refuel.lua").new({fuelSlot = 1}, inventory)
 
 
 local seedSlot = 2
@@ -42,12 +45,6 @@ local plantType = "minecraft:wheat"
 local seedType = "minecraft:wheat_seeds"
 local readyValue = 7
 
-local function onEachInventory(action)
-  for i = 3, 16 do
-    local item = turtle.getItemDetail(i)
-    if item and action(i, item) then break end
-  end
-end
 
 local function selectSeeds()
   turtle.select(seedSlot)
@@ -59,7 +56,7 @@ local function selectSeeds()
   end
 
   if item == nil then
-    onEachInventory(
+    inventory.onEachInventory(
       function(i, inventoryItem)
         if inventoryItem.name == seedType then
           turtle.select(i)
@@ -101,7 +98,7 @@ while true do
   movement.faceDir(0)
 
   print "dumping items"
-  onEachInventory(
+  inventory.onEachInventory(
     function(i, inventoryItem)
       if inventoryItem.name ~= seedType then
         turtle.select(i)

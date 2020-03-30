@@ -30,7 +30,8 @@ if digItem ~= nil then
 end
 
 local movement = dofile("movement.lua").movement
-local fuel = dofile("refuel.lua").new({fuelSlot = 1})
+local inventory = dofile("inventory.lua").new({startIndex=3, endIndex=16})
+local fuel = dofile("refuel.lua").new({fuelSlot = 1}, inventory)
 
 
 local blacklistItems = {
@@ -70,12 +71,14 @@ local function dig(direction)
         turtle.transferTo(fuel.getFuelSlot())
         handled = true
       else
-        for key, storage in pairs(storageSlots) do
-          if turtle.transferTo(storage) then
-            handled = true
-            break
+        inventory.onEachInventory(
+          function (i)
+            if turtle.transferTo(i) then
+              handled = true
+              return true
+            end
           end
-        end
+        )
       end
       if not handled then turtle.drop() end
     end

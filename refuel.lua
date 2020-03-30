@@ -1,5 +1,4 @@
-
-
+local inventory
 local fuelType, fuelSlot
 
 local function getFuelType()
@@ -16,6 +15,20 @@ local function checkAndRefuel()
   if level < 1 then
     local oldSlot = turtle.getSelectedSlot()
     turtle.select(fuelSlot)
+
+    -- check rest of inventory for fuel
+    if turtle.getItemDetail() == nil then
+      inventory.onEachInventory(
+        function(i, item)
+          if item.name == fuelType then
+            turtle.select(i)
+            turtle.transferTo(fuelSlot)
+            turtle.select(fuelSlot)
+            return true
+          end
+        end
+      )
+    end
 
     local success = turtle.refuel()
     if not success then print("need fuel") end
@@ -35,8 +48,11 @@ local function checkAndRefuel()
   end
 end
 
-local function new(ops)
+local function new(ops, inventory)
   fuelSlot = ops and ops[fuelSlot] or 1
+  
+  if inventory == nil then error "fuel needs inventory dependency" end
+  inventory = inventory
 
   turtle.select(fuelSlot)
   local fuelItem = turtle.getItemDetail(fuelSlot)
