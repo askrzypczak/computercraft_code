@@ -1,9 +1,12 @@
 print "installing package"
 
-if fs.exists("/digger.lua") then
-  fs.delete("/digger.lua")
-end
+local files = {"digger.lua", "movement.lua"}
 
-fs.copy("/disk/digger.lua", "/digger.lua")
+for key, filename in pairs(files) do
+  if fs.exists("/" .. filename) then
+    fs.delete("/" .. filename)
+  end
+  fs.copy("/disk/" .. filename, "/" .. filename)
+end
 
 print "done!"
