@@ -30,18 +30,18 @@ local function checkAndRefuel()
       )
     end
 
-    local success = turtle.refuel()
-    if not success then print("need fuel") end
+    local success = turtle.refuel(1)
+    
     while turtle.getFuelLevel() < 1 do
-
+      print("need fuel")
+      os.sleep(5)
       local fuelDetail = turtle.getItemDetail(fuelSlot)
       if fuelDetail ~= nil then
         fuelType = fuelDetail.name
         print(string.format("using %s as fuel", fuelDetail.name))
       end
 
-      turtle.refuel()
-      os.sleep(5)
+      turtle.refuel(1)
     end
 
     turtle.select(oldSlot)
@@ -50,7 +50,7 @@ end
 
 local function new(ops, inventory)
   fuelSlot = ops and ops[fuelSlot] or 1
-  
+
   if inventory == nil then error "fuel needs inventory dependency" end
   inventory = inventory
 
