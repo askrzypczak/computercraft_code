@@ -13,6 +13,8 @@ local storageSlots = {3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16}
 local digSlot = 2
 local fuelSlot = 1
 
+local fuelType
+
 local x, y, z = 0, 0, 0
 
 local face = 0
@@ -72,6 +74,13 @@ local function checkAndRefuel()
     local success = turtle.refuel()
     if not success then print("need fuel") end
     while turtle.getFuelLevel() < 1 do
+
+      local fuelDetail = turtle.getItemDetail(fuelSlot)
+      if fuelDetail ~= nil then
+        fuelType = fuelDetail.name
+        print(string.format("using %s as fuel", fuelDetail.name))
+      end
+
       turtle.refuel()
       os.sleep(5)
     end
@@ -101,7 +110,7 @@ local function dig(direction)
       handled = true
     end
     if not handled then
-      if turtle.compareTo(fuelSlot) and turtle.getItemSpace(fuelSlot) > 0 then
+      if digDetail == fuelType and turtle.getItemSpace(fuelSlot) > 0 then
         turtle.transferTo(fuelSlot)
         handled = true
       else
@@ -234,6 +243,8 @@ if fuelItem == nil then
   error(string.format("no fuel item provided in slot %i", fuelSlot))
 end
 print(string.format("using %s as fuel", fuelItem.name))
+fuelType = fuelItem.name
+
 
 local digItem = turtle.getItemDetail(digSlot)
 if digItem ~= nil then
