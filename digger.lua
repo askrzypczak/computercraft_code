@@ -5,7 +5,10 @@ local tArgs = {...}
 local blacklistItems = {
   ["minecraft:cobblestone"] = true,
   ["minecraft:dirt"] = true,
-  ["minecraft:gravel"] = true
+  ["minecraft:gravel"] = true,
+  ["minecraft:diorite"] = true,
+  ["minecraft:andesite"] = true,
+  ["minecraft:granite"] = true
 }
 
 local xTarget, yTarget, zTarget = 0, 1, 1
@@ -109,9 +112,10 @@ local function fullDig()
     end
   end
 
-  movement.moveX(xTarget * -1)
-  movement.moveY(yTarget * -1)
-  movement.moveZ(zTarget * -1)
+  --go back to start, no digging.
+  movement.moveX(xTarget * xSign * -1)
+  movement.moveY(yTarget * ySign * -1)
+  movement.moveZ(zTarget * zSign * -1)
 end
 
 
