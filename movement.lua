@@ -97,12 +97,43 @@ local function moveTo(targetX, targetY, targetZ, callbacks)
   moveZ(targetZ - z, callbacks)
 end
 
+local function coverMove(xVector, yVector, zVector, callbacks)
+
+  local xSign, ySign ,zSign
+  if xVector > 0 then xSign = 1 else xSign = -1 end
+  if yVector > 0 then ySign = 1 else ySign = -1 end
+  if zVector > 0 then zSign = 1 else zSign = -1 end
+
+  local xMagnitude = math.abs(xVector)
+  local yMagnitude = math.abs(yVector)
+  local zMagnitude = math.abs(zVector)
+
+  for zCount = 1, zMagnitude do
+    for yCount = 1, yMagnitude do
+
+      moveX(xSign * xMagnitude, callbacks)
+
+      if yCount < yMagnitude then
+        xSign = xSign * -1
+        moveY(ySign, callbacks)
+      end
+    end
+
+    if zCount < zMagnitude then
+      ySign = ySign * -1
+      xSign = xSign * -1
+      moveZ(zSign, callbacks)
+    end
+  end
+end
+
 return {
   movement = {
     moveX = moveX,
     moveY = moveY,
     moveZ = moveZ,
     moveTo = moveTo,
+    coverMove = coverMove,
     faceDir = faceDir
   }
 }
