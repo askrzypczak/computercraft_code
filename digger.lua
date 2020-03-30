@@ -8,16 +8,14 @@ local blacklistItems = {
   ["minecraft:gravel"] = true
 }
 
-local xTarget = tonumber(tArgs[1]) or 0
-local yTarget = tonumber(tArgs[2]) or 1
-local zTarget = tonumber(tArgs[3]) or 1
-
-print("target: ", xTarget, yTarget, zTarget)
+local xTarget, yTarget, zTarget = 0, 1, 1
 
 
 local storageSlots = {3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16}
 local digSlot = 2
 local fuelSlot = 1
+
+local fuelType
 
 local function checkAndRefuel()
   local level = turtle.getFuelLevel()
@@ -30,6 +28,13 @@ local function checkAndRefuel()
     local success = turtle.refuel()
     if not success then print("need fuel") end
     while turtle.getFuelLevel() < 1 do
+
+      local fuelDetail = turtle.getItemDetail(fuelSlot)
+      if fuelDetail ~= nil then
+        fuelType = fuelDetail.name
+        print(string.format("using %s as fuel", fuelDetail.name))
+      end
+
       turtle.refuel()
       os.sleep(5)
     end
@@ -59,7 +64,7 @@ local function dig(direction)
       handled = true
     end
     if not handled then
-      if turtle.compareTo(fuelSlot) and turtle.getItemSpace(fuelSlot) > 0 then
+      if digDetail == fuelType and turtle.getItemSpace(fuelSlot) > 0 then
         turtle.transferTo(fuelSlot)
         handled = true
       else
@@ -103,10 +108,35 @@ local function fullDig()
       movement.moveZ(zSign, dig, {checkAndRefuel})
     end
   end
+
+  movement.moveX(xTarget * -1)
+  movement.moveY(yTarget * -1)
+  movement.moveZ(zTarget * -1)
 end
 
 
 print "initializing..."
+if #tArgs == 0 or tArgs[1] == "help" then
+  textutils.pagedPrint(
+    [[usage: Provide 3 arguments: x, y, z. 
+
+    This describes a vector from the current bot position.
+    Forward is positive x, Right is positive y, and Up is positive Z
+    bot will then clear out full cube described by its position and the vector
+    
+    fuel should be placed in slot 1, it will use the fuel to move.
+    when the same fuel type is dug, it will add the dug item to the fuel stack, and use it as fuel in the future.
+
+    If the bot does run out of fuel, you will need to add more fuel to slot 1.
+    ]]
+  )
+
+  return
+end
+
+xTarget, yTarget, zTarget = tonumber(tArgs[1]), tonumber(tArgs[2]), tonumber(tArgs[3])
+print("target: ", xTarget, yTarget, zTarget)
+
 
 turtle.select(fuelSlot)
 local fuelItem = turtle.getItemDetail(fuelSlot)
@@ -114,6 +144,8 @@ if fuelItem == nil then
   error(string.format("no fuel item provided in slot %i", fuelSlot))
 end
 print(string.format("using %s as fuel", fuelItem.name))
+fuelType = fuelItem.name
+
 
 local digItem = turtle.getItemDetail(digSlot)
 if digItem ~= nil then
