@@ -78,7 +78,7 @@ local function dig(direction)
         turtle.transferTo(fuel.getFuelSlot())
         handled = true
       else
-        inventory.onEachInventory(
+        inventory.onEachInventorySlot(
           function (i)
             if turtle.transferTo(i) then
               handled = true
