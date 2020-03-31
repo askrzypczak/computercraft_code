@@ -116,7 +116,6 @@ local function coverMove(xVector, yVector, zVector, callbacks)
   for zCount = 0, zMagnitude do
     for yCount = 0, yMagnitude do
 
-      -- minus 1 to behave same as y and z
       moveX(xSign * (xMagnitude), callbacks)
 
       if yCount < yMagnitude then
