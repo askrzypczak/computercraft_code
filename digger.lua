@@ -13,9 +13,16 @@ if #tArgs == 0 or tArgs[1] == "help" then
     when the same fuel type is dug, it will add the dug item to the fuel stack, and use it as fuel in the future.
 
     If the bot does run out of fuel, you will need to add more fuel to slot 1.
+
+    To equip a diamond pick, use the command "digger equip"
     ]]
   )
+  return
+end
 
+if tArgs[1] == "equip" then
+  turtle.select(1)
+  if turtle.equipRight() then print "equiped!" else print "equip failed" end
   return
 end
 
@@ -30,7 +37,7 @@ if digItem ~= nil then
 end
 
 local movement = dofile("movement.lua").movement
-local inventory = dofile("inventory.lua").new({startIndex=3, endIndex=16})
+local inventory = dofile("inventory.lua").new({range={startIndex=3, endIndex=16}})
 local fuel = dofile("refuel.lua").new({fuelSlot = 1}, inventory)
 
 
