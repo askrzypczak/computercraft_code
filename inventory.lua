@@ -15,11 +15,11 @@ local function new(ops)
   end
 
   local function onEachInventory(action, startIndex, endIndex)
-    _eachInv(action, startIndex, endIndex, true)
+    _eachInv(action, startIndex, endIndex, false)
   end
 
   local function onEachInventorySlot(action, startIndex, endIndex)
-    _eachInv(action, startIndex, endIndex, false)
+    _eachInv(action, startIndex, endIndex, true)
   end
 
   return {
