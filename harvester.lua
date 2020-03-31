@@ -4,7 +4,7 @@ local tArgs = {...}
 print "initializing..."
 if #tArgs == 0 or tArgs[1] == "help" then
   textutils.pagedPrint(
-    [[usage: Provide 4 arguments: x2, y2, x1, y1, z1 
+    [[usage: Provide 5 arguments: x2, y2, x1, y1, z1 
 
     This tool only works for wheat. it will skip harvesting any other plant
 

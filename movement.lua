@@ -1,6 +1,10 @@
 local x, y, z = 0, 0, 0
 local face = 0
 
+local function getX() return x end
+local function getY() return y end
+local function getZ() return z end
+
 local function up()
   if turtle.up() then z = z + 1
   else print "error moving up!"
@@ -134,6 +138,9 @@ end
 
 return {
   movement = {
+    getX = getX,
+    getY = getY,
+    getZ = getZ,
     moveX = moveX,
     moveY = moveY,
     moveZ = moveZ,
