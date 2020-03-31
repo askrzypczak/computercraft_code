@@ -47,11 +47,11 @@ local function checkAndRefuel()
   end
 end
 
-local function new(ops, inventory)
+local function new(ops, _inventory)
   fuelSlot = ops and ops[fuelSlot] or 1
 
-  if inventory == nil then error "fuel needs inventory dependency" end
-  inventory = inventory
+  if _inventory == nil then error "fuel needs inventory dependency" end
+  inventory = _inventory
 
   turtle.select(fuelSlot)
   local fuelItem = turtle.getItemDetail(fuelSlot)

@@ -28,7 +28,10 @@ local function dump(dir, itemName)
   movement.faceDir(dir)
   inventory.onEachInventory(
     function(i, item)
-      if itemName == nil or item.name == itemName then turtle.drop() end
+      if itemName == nil or item.name == itemName then 
+        turtle.select(i)
+        turtle.drop()
+      end
     end
   )
 end
@@ -47,11 +50,11 @@ while true do
     end
     success = turtle.craft()
     if success then dump(outputDir, output) end
-  end
-  if not success then
-    dump(outputDir, output)
-    dump(inputDir, input)
-    dump(garbageDir)
-    os.sleep(5)
-  end
+    if not success then
+      dump(outputDir, output)
+      dump(inputDir, input)
+      dump(garbageDir)
+      os.sleep(5)
+    end
+  else os.sleep(15) end
 end
