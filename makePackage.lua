@@ -1,6 +1,6 @@
 print "uploading package to floppy"
 
-local files = {"digger.lua", "init.lua", "movement.lua", "refuel.lua", "harvester.lua", "inventory.lua"}
+local files = {"digger.lua", "init.lua", "movement.lua", "refuel.lua", "harvester.lua", "inventory.lua", "craft.lua"}
 
 for key, filename in pairs(files) do
   if fs.exists("/disk/" .. filename) then

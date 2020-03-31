@@ -113,10 +113,11 @@ local function coverMove(xVector, yVector, zVector, callbacks)
   local yMagnitude = math.abs(yVector)
   local zMagnitude = math.abs(zVector)
 
-  for zCount = 1, zMagnitude do
-    for yCount = 1, yMagnitude do
+  for zCount = 0, zMagnitude do
+    for yCount = 0, yMagnitude do
 
-      moveX(xSign * xMagnitude, callbacks)
+      -- minus 1 to behave same as y and z
+      moveX(xSign * (xMagnitude), callbacks)
 
       if yCount < yMagnitude then
         xSign = xSign * -1
