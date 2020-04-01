@@ -1,4 +1,11 @@
 
+--lets you select another slot and act on it while preserving the contextual slot
+local function actOnSlot(otherSlot, action)
+  local oldSlot = turtle.getSelectedSlot()
+  turtle.select(otherSlot)
+  action()
+  turtle.select(oldSlot)
+end
 
 local function new(ops)
   local invRange = ops.range
@@ -24,7 +31,8 @@ local function new(ops)
 
   return {
     onEachInventory = onEachInventory,
-    onEachInventorySlot = onEachInventorySlot
+    onEachInventorySlot = onEachInventorySlot,
+    actOnSlot = actOnSlot
   }
 end
 
