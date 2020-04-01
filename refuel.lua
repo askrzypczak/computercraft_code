@@ -17,16 +17,16 @@ end
 local function checkAndFillLavaBucket(dirName)
   if fuelBucketSlot then
 
-    local lava
+    local itemThere, item
     if not dirName or dirName == "forward" then
-      lava = turtle.inspect()
+      itemThere, item = turtle.inspect()
     elseif dirName == "up" then
-      lava = turtle.inspectUp()
+      itemThere, item = turtle.inspectUp()
     elseif dirName == "down" then
-      lava = turtle.inspectDown()
+      itemThere, item = turtle.inspectDown()
     end
 
-    if lava and lava.name == lavaName then
+    if itemThere and item.name == lavaName and item.state.level == 0 then
       inventory.actOnSlot(fuelBucketSlot, function()
 
         local bucketItem = turtle.getItemDetail(fuelBucketSlot)
@@ -106,7 +106,7 @@ local function new(ops, _inventory)
 
   turtle.select(fuelSlot)
   local fuelItem = turtle.getItemDetail(fuelSlot)
-  if fuelItem == nil then
+  if fuelItem == nil or not turtle.refuel(0) then
     error(string.format("no fuel item provided in slot %i", fuelSlot))
   end
   print(string.format("using %s as fuel", fuelItem.name))
