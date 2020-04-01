@@ -2,6 +2,9 @@
     "Lua.diagnostics.globals": [
         "turtle",
         "textutils",
-        "fs"
+        "fs",
+        "disk",
+        "peripheral",
+        "term"
     ]
 }

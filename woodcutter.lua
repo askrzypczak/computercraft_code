@@ -7,10 +7,11 @@ if tArgs[1] == "help" then
     farm pattern will be repeated x by y times.
 
     This tool only works for wood and related blocks. It requires a cleared space
-    there must be a clear path from (0,0,0) to (x1,y1,z1), pathing down Z, then y, then x
     
     fuel should be placed in slot 1, it will use the fuel to move.
     If the bot does run out of fuel, you will need to add more fuel to slot 1.
+
+    saplings should be added to slot 2
 
     the turtle will need an axe. if the current turtle does not, use the command line "woodcutter equip" when an axe is in slot 1]]
   )
@@ -41,16 +42,17 @@ local patternX, patternY = #farmPattern, #farmPattern[1]
 
 local saplingSlot = 2
 
-local saplingItem = turtle.getItemDetail(saplingSlot)
-if saplingItem ~= nil then
-  error(string.format("sapling slot is not empty! (slot %i)", saplingSlot))
-end
-
 local function isSapling(item)
   if item then
     return string.find(item.name, "sapling") ~= nil
   else return false end
 end
+
+local saplingItem = turtle.getItemDetail(saplingSlot)
+if not isSapling(saplingItem) then
+  error(string.format("sapling slot is not a sapling! (slot %i)", saplingSlot))
+end
+
 
 local digSlot = 3
 
@@ -67,6 +69,8 @@ local fuel = dofile("refuel.lua").new({fuelSlot = 1}, inventory)
 
 
 local function woodcut(direction)
+  turtle.select(digSlot)
+
   local digSuccess
   if not direction or direction == "forward" then
     digSuccess = turtle.dig()
@@ -81,13 +85,19 @@ local function woodcut(direction)
     if isSapling(digDetail) then
       turtle.transferTo(saplingSlot)
     else
-      inventory.onEachInventorySlot(turtle.transferTo)
+      inventory.onEachInventorySlot(
+        function(i)
+          return turtle.transferTo(i)
+        end
+      )
     end
   end
 end
 
 local function plant()
-  if farmPattern[movement.getX()][movement.getY()] == 1 then
+  local xIndex = math.abs(movement.getX()) % (#farmPattern + 1)
+  local yIndex = math.abs(movement.getY()) % (#farmPattern[xIndex] + 1)
+  if farmPattern[xIndex][yIndex] == 1 then
     turtle.select(saplingSlot)
     turtle.plceDown()
   end
@@ -97,15 +107,15 @@ end
 
 movement.moveTo(1, 0, 0, {fuel.checkAndRefuel})
 
-print "cutting"
 local xTarget, yTarget = xRepeat * patternX, yRepeat * patternY
+print(string.format("cutting (%i, %i, %i) to (%i, %i, %i)", movement.getX(), movement.getY(), movement.getZ(), xTarget, yTarget, farmHeight))
 movement.coverMove(xTarget, yTarget, farmHeight, {woodcut, fuel.checkAndRefuel})
 
 
 print "done"
 movement.moveToBackwards(1, 0, 1, {fuel.checkAndRefuel})
 
-print "planting"
+print(string.format("planting (%i, %i, %i) to (%i, %i, %i)", movement.getX(), movement.getY(), movement.getZ(), xTarget, yTarget, 0))
 movement.coverMove(xTarget, yTarget, 0, {plant, fuel.checkAndRefuel})
 
 
