@@ -105,22 +105,31 @@ local function plant()
   end
 end
 
+local function waitForGrowth()
+  os.sleep(25 * 60)
+end
 
 
-movement.moveTo(1, 0, 0, {fuel.checkAndRefuel})
+while true do
 
-local xTarget, yTarget = xRepeat * patternX, yRepeat * patternY
-print(string.format("cutting (%i, %i, %i) to (%i, %i, %i)", movement.getX(), movement.getY(), movement.getZ(), xTarget, yTarget, farmHeight))
-movement.observeMove(xTarget, yTarget, farmHeight, {woodcut, fuel.checkAndRefuel})
+  movement.moveTo(1, 0, 0, {fuel.checkAndRefuel})
 
-
-print "done"
-movement.moveToBackwards(1, 0, 1, {fuel.checkAndRefuel})
-
-print(string.format("planting (%i, %i, %i) to (%i, %i, %i)", movement.getX(), movement.getY(), movement.getZ(), xTarget, yTarget, 0))
-movement.coverMove(xTarget, yTarget, 0, {plant, fuel.checkAndRefuel})
+  local xTarget, yTarget = xRepeat * patternX, yRepeat * patternY
+  print(string.format("cutting (%i, %i, %i) to (%i, %i, %i)", movement.getX(), movement.getY(), movement.getZ(), xTarget, yTarget, farmHeight))
+  movement.observeMove(xTarget, yTarget, farmHeight, {woodcut, fuel.checkAndRefuel})
 
 
-movement.moveToBackwards(0, 0, 1, {woodcut, fuel.checkAndRefuel})
-movement.moveToBackwards(0, 0, 0, {woodcut, fuel.checkAndRefuel})
-movement.faceDir(0)
+  print "done"
+  movement.moveToBackwards(1, 0, 1, {fuel.checkAndRefuel})
+
+  print(string.format("planting (%i, %i, %i) to (%i, %i, %i)", movement.getX(), movement.getY(), movement.getZ(), xTarget, yTarget, 0))
+  movement.coverMove(xTarget, yTarget, 0, {plant, fuel.checkAndRefuel})
+
+
+  movement.moveToBackwards(0, 0, 1, {woodcut, fuel.checkAndRefuel})
+  movement.moveToBackwards(0, 0, 0, {woodcut, fuel.checkAndRefuel})
+  movement.faceDir(0)
+
+  print "waiting..."
+  waitForGrowth()
+end
