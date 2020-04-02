@@ -36,9 +36,9 @@ if digItem ~= nil then
   error(string.format("dig slot is not empty! (slot %i)", digSlot))
 end
 
-local movement = dofile("movement.lua").movement
-local inventory = dofile("inventory.lua").new({range={startIndex=4, endIndex=16}})
-local fuel = dofile("refuel.lua").new({fuelSlot = 1, bucketSlot = 2}, inventory)
+local movement = dofile("API/movement.lua").movement
+local inventory = dofile("API/inventory.lua").new({range={startIndex=4, endIndex=16}})
+local fuel = dofile("API/refuel.lua").new({fuelSlot = 1, bucketSlot = 2}, inventory)
 
 
 local blacklistItems = {

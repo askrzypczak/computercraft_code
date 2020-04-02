@@ -63,9 +63,9 @@ end
 
 
 
-local movement = dofile("movement.lua").movement
-local inventory = dofile("inventory.lua").new({range={startIndex=4, endIndex=16}})
-local fuel = dofile("refuel.lua").new({fuelSlot = 1}, inventory)
+local movement = dofile("API/movement.lua").movement
+local inventory = dofile("API/inventory.lua").new({range={startIndex=4, endIndex=16}})
+local fuel = dofile("API/refuel.lua").new({fuelSlot = 1}, inventory)
 
 
 local function woodcut(direction)

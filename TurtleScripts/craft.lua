@@ -1,5 +1,5 @@
-local movement = dofile("movement.lua").movement
-local inventory = dofile("inventory.lua").new({range={startIndex=1, endIndex=16}})
+local movement = dofile("API/movement.lua").movement
+local inventory = dofile("API/inventory.lua").new({range={startIndex=1, endIndex=16}})
 
 local pattern = {
   "minecraft:wheat", "minecraft:wheat", "minecraft:wheat"
