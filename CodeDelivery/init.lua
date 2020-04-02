@@ -1,5 +1,7 @@
 print "installing package"
 
+local setAliases = dofile("/disk/API/shellHelper.lua").new(shell).setAliases
+
 --os will throw error if you try to delete these, and thats correct
 local protectedFiles = {"disk", "rom"}
 
@@ -20,5 +22,16 @@ local files = {"API", "TurtleScripts"}
 for i, filename in pairs(files) do
   fs.copy("/disk/" .. filename, "/" .. filename)
 end
+
+
+local startup = "/disk/CodeDelivery/startupBase.lua"
+
+if fs.exists("/startup") then
+  fs.delete("/startup")
+end
+fs.copy(startup, "/startup")
+
+
+setAliases()
 
 print "done!"

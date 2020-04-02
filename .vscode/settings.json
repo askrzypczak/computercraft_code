@@ -5,6 +5,7 @@
         "fs",
         "disk",
         "peripheral",
-        "term"
+        "term",
+        "shell"
     ]
 }
