@@ -121,5 +121,6 @@ print(string.format("planting (%i, %i, %i) to (%i, %i, %i)", movement.getX(), mo
 movement.coverMove(xTarget, yTarget, 0, {plant, fuel.checkAndRefuel})
 
 
-movement.moveToBackwards(0, 0, 0, {fuel.checkAndRefuel})
+movement.moveToBackwards(0, 0, 1, {woodcut, fuel.checkAndRefuel})
+movement.moveToBackwards(0, 0, 0, {woodcut, fuel.checkAndRefuel})
 movement.faceDir(0)

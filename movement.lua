@@ -185,18 +185,15 @@ local function observeMove(xVector, yVector, zVector, callbacks)
 
       local zTarget
       if zSign == 1 then
-        zTarget = math.min(zMax, zSign * 3)
+        zTarget = math.min(zMax - z, zSign * 3)
       else
-        zTarget = math.max(zMin, zSign * 3)
+        zTarget = math.max(zMin + z, zSign * 3)
       end
       moveZ(zTarget, callbacks)
     end
   end
 
-  if (z-1) > zMin or (z+1) < zMax then
-    moveZ(2 * zSign, callbacks)
-    ySign = ySign * -1
-    xSign = xSign * -1
+  if ((z-1) > zMin or (z+1) < zMax) then
     yLoop()
   end
 end
