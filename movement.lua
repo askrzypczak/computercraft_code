@@ -49,6 +49,11 @@ local function forward()
   end
 end
 
+local function invokeCallbacks(callbacks, face)
+  if callbacks then
+    for i, callback in pairs(callbacks) do callback(face) end
+  end
+end
 
 local function createMovementFunction(faceIfGreater, faceIfLesser, getCoord)
   local function movementFunction(dist, callbacks)
@@ -61,9 +66,7 @@ local function createMovementFunction(faceIfGreater, faceIfLesser, getCoord)
     end
     if dist ~= 0 then
       while getCoord() ~= goal do
-        if callbacks then
-          for i, callback in pairs(callbacks) do callback() end
-        end
+        invokeCallbacks(callbacks)
         forward()
       end
     end
@@ -80,16 +83,12 @@ local function moveZ(dist, callbacks)
 
   if dist > 0 then
     while z ~= goal do
-      if callbacks then
-        for i, callback in pairs(callbacks) do callback("up") end
-      end
+      invokeCallbacks(callbacks, "up")
       up()
     end
   elseif dist < 0 then
     while z ~= goal do
-      if callbacks then
-        for i, callback in pairs(callbacks) do callback("down") end
-      end
+      invokeCallbacks(callbacks, "down")
       down()
     end
   end
@@ -106,6 +105,7 @@ local function moveToBackwards(targetX, targetY, targetZ, callbacks)
   moveX(targetX - x, callbacks)
 end
 
+--the bot will occupy every space in the cube decribed by the bots current position and the end of the vector.
 local function coverMove(xVector, yVector, zVector, callbacks)
 
   local xSign, ySign ,zSign
@@ -136,6 +136,58 @@ local function coverMove(xVector, yVector, zVector, callbacks)
   end
 end
 
+--the bot will 'observe' every space (by having callbacks be invoked in the direction of each block at least once) in the cube decribed by the bots current position and the end of the vector.
+--this is more fuel efficient.
+--once this function is properly tested, will need to generalize it and use it to replace coverMove
+local function observeMove(xVector, yVector, zVector, callbacks)
+
+  local xSign, ySign ,zSign
+  if xVector > 0 then xSign = 1 else xSign = -1 end
+  if yVector > 0 then ySign = 1 else ySign = -1 end
+  if zVector > 0 then zSign = 1 else zSign = -1 end
+
+  local xMagnitude = math.abs(xVector)
+  local yMagnitude = math.abs(yVector)
+  local zMagnitude = math.abs(zVector)
+
+  local zMax = math.max(z, z + zVector)
+  local zMin = math.min(z, z + zVector)
+
+  for zCount = 0, zMagnitude, 3 do
+    for yCount = 0, yMagnitude do
+      for xCount = 0, xMagnitude do
+        if z ~= zMax then
+          invokeCallbacks(callbacks, "up")
+        end
+        if z ~= zMin then
+          invokeCallbacks(callbacks, "down")
+        end
+        if xCount < xMagnitude then
+          moveX(xSign, callbacks)
+        end
+      end
+
+      if yCount < yMagnitude then
+        xSign = xSign * -1
+        moveY(ySign, callbacks)
+      end
+    end
+
+    if zCount < zMagnitude then
+      ySign = ySign * -1
+      xSign = xSign * -1
+
+      local zTarget
+      if zSign == 1 then
+        zTarget = math.min(zMax, zSign * 3)
+      else
+        zTarget = math.max(zMin, zSign * 3)
+      end
+      moveZ(zTarget, callbacks)
+    end
+  end
+end
+
 return {
   movement = {
     getX = getX,
@@ -147,6 +199,7 @@ return {
     moveTo = moveTo,
     moveToBackwards = moveToBackwards,
     coverMove = coverMove,
+    observeMove = observeMove,
     faceDir = faceDir
   }
 }

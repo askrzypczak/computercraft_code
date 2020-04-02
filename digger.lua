@@ -29,7 +29,7 @@ end
 local xTarget, yTarget, zTarget = tonumber(tArgs[1]) or 0, tonumber(tArgs[2]) or 0, tonumber(tArgs[3]) or 0
 print("target: ", xTarget, yTarget, zTarget)
 
-local digSlot = 2
+local digSlot = 3
 
 local digItem = turtle.getItemDetail(digSlot)
 if digItem ~= nil then
@@ -37,8 +37,8 @@ if digItem ~= nil then
 end
 
 local movement = dofile("movement.lua").movement
-local inventory = dofile("inventory.lua").new({range={startIndex=3, endIndex=16}})
-local fuel = dofile("refuel.lua").new({fuelSlot = 1}, inventory)
+local inventory = dofile("inventory.lua").new({range={startIndex=4, endIndex=16}})
+local fuel = dofile("refuel.lua").new({fuelSlot = 1, bucketSlot = 2}, inventory)
 
 
 local blacklistItems = {
@@ -90,6 +90,6 @@ local function dig(direction)
   return handled
 end
 
-movement.coverMove(xTarget, yTarget, zTarget, {dig, fuel.checkAndRefuel})
+movement.observeMove(xTarget, yTarget, zTarget, {dig, fuel.checkAndRefuel})
 movement.moveTo(0, 0, 0)
 movement.faceDir(0)

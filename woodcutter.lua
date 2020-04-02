@@ -111,7 +111,7 @@ movement.moveTo(1, 0, 0, {fuel.checkAndRefuel})
 
 local xTarget, yTarget = xRepeat * patternX, yRepeat * patternY
 print(string.format("cutting (%i, %i, %i) to (%i, %i, %i)", movement.getX(), movement.getY(), movement.getZ(), xTarget, yTarget, farmHeight))
-movement.coverMove(xTarget, yTarget, farmHeight, {woodcut, fuel.checkAndRefuel})
+movement.observeMove(xTarget, yTarget, farmHeight, {woodcut, fuel.checkAndRefuel})
 
 
 print "done"
