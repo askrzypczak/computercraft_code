@@ -9,7 +9,7 @@ local function new(_shell, ops)
   if not _shell then error("missing shell dependency") end
 
   local function run()
-    local config = dofile("/ScriptRunner/config.lua")
+    local config = dofile(filename)
 
     if config == nil then
       error("config file returned nil")
