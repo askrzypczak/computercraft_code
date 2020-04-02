@@ -38,7 +38,7 @@ end
 
 local movement = dofile("API/movement.lua").movement
 local inventory = dofile("API/inventory.lua").new({range={startIndex=4, endIndex=16}})
-local fuel = dofile("API/refuel.lua").new({fuelSlot = 1, bucketSlot = 2}, inventory)
+local fuel = dofile("API/refuel.lua").new(inventory, {fuelSlot = 1, bucketSlot = 2})
 
 
 local blacklistItems = {

@@ -37,7 +37,7 @@ local startX, startY, startZ, endX, endY = tonumber(tArgs[3]) or 0, tonumber(tAr
 
 local movement = dofile("API/movement.lua").movement
 local inventory = dofile("API/inventory.lua").new({range={startIndex=2, endIndex=16}}) --seeds count as inventory
-local fuel = dofile("API/refuel.lua").new({fuelSlot = 1}, inventory)
+local fuel = dofile("API/refuel.lua").new(inventory, {fuelSlot = 1})
 
 
 local seedSlot = 2

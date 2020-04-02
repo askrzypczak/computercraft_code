@@ -97,7 +97,7 @@ local function checkAndRefuel()
   end
 end
 
-local function new(ops, _inventory)
+local function new(_inventory, ops)
   fuelSlot = ops and ops.fuelSlot or 1
   fuelBucketSlot = ops and ops.bucketSlot
 
