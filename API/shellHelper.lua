@@ -13,6 +13,7 @@ local function new(shell)
   end
 
   shell.setAlias("execute", "/ScriptRunner/execute.lua")
+  print("set alias: ", "execute")
 
   return({
     setDefaultAliases = setDefaultAliases
