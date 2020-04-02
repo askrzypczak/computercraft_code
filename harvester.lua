@@ -100,10 +100,8 @@ while true do
   print "dumping items"
   inventory.onEachInventory(
     function(i, inventoryItem)
-      if inventoryItem.name ~= seedType then
-        turtle.select(i)
-        turtle.dropDown()
-      end
+      turtle.select(i)
+      turtle.dropDown()
     end
   )
 
