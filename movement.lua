@@ -153,26 +153,32 @@ local function observeMove(xVector, yVector, zVector, callbacks)
   local zMax = math.max(z, z + zVector)
   local zMin = math.min(z, z + zVector)
 
-  for zCount = 0, zMagnitude, 3 do
-    for yCount = 0, yMagnitude do
-      for xCount = 0, xMagnitude do
-        if z ~= zMax then
-          invokeCallbacks(callbacks, "up")
-        end
-        if z ~= zMin then
-          invokeCallbacks(callbacks, "down")
-        end
-        if xCount < xMagnitude then
-          moveX(xSign, callbacks)
-        end
+  local function xLoop()
+    for xCount = 0, xMagnitude do
+      if z ~= zMax then
+        invokeCallbacks(callbacks, "up")
       end
+      if z ~= zMin then
+        invokeCallbacks(callbacks, "down")
+      end
+      if xCount < xMagnitude then
+        moveX(xSign, callbacks)
+      end
+    end
+  end
 
+  local function yLoop()
+    for yCount = 0, yMagnitude do
+      xLoop()
       if yCount < yMagnitude then
         xSign = xSign * -1
         moveY(ySign, callbacks)
       end
     end
-
+  end
+  for zCount = 0, zMagnitude, 3 do
+    
+    yLoop()
     if zCount < zMagnitude then
       ySign = ySign * -1
       xSign = xSign * -1
@@ -185,6 +191,13 @@ local function observeMove(xVector, yVector, zVector, callbacks)
       end
       moveZ(zTarget, callbacks)
     end
+  end
+
+  if (z-1) > zMin or (z+1) < zMax then
+    moveZ(2 * zSign, callbacks)
+    ySign = ySign * -1
+    xSign = xSign * -1
+    yLoop()
   end
 end
 

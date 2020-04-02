@@ -100,7 +100,7 @@ local function plant()
     local yIndex = math.abs(movement.getY()) % (#farmPattern[xIndex] + 1)
     if farmPattern[xIndex][yIndex] == 1 then
       turtle.select(saplingSlot)
-      turtle.plceDown()
+      turtle.placeDown()
     end
   end
 end
