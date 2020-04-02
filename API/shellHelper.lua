@@ -3,7 +3,7 @@
 local function new(shell)
   if not shell then error("mandatory dependency 'shell' not provided") end
 
-  local function setAliases()
+  local function setDefaultAliases()
 
     for i, filename in pairs(fs.list("/TurtleScripts")) do
       local command = string.match(filename, "(.*)%.lua$")
@@ -12,8 +12,10 @@ local function new(shell)
     end
   end
 
+  shell.setAlias("execute", "/ScriptRunner/execute.lua")
+
   return({
-    setAliases = setAliases
+    setDefaultAliases = setDefaultAliases
   })
 end
 

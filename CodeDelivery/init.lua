@@ -1,6 +1,6 @@
 print "installing package"
 
-local setAliases = dofile("/disk/API/shellHelper.lua").new(shell).setAliases
+local setDefaultAliases = dofile("/disk/API/shellHelper.lua").new(shell).setDefaultAliases
 
 --os will throw error if you try to delete these, and thats correct
 local protectedFiles = {"disk", "rom"}
@@ -17,7 +17,7 @@ for i, filename in pairs(fs.list("/")) do
 end
 
 --folders should work the same as files
-local files = {"API", "TurtleScripts"}
+local files = {"API", "TurtleScripts", "ScriptRunner"}
 
 for i, filename in pairs(files) do
   fs.copy("/disk/" .. filename, "/" .. filename)
@@ -32,6 +32,6 @@ end
 fs.copy(startup, "/startup")
 
 
-setAliases()
+setDefaultAliases()
 
 print "done!"

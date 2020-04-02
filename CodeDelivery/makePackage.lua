@@ -9,7 +9,7 @@ end
 
 
 --folders should work the same as files
-local files = {"API", "TurtleScripts", "/CodeDelivery/startupBase.lua"}
+local files = {"API", "TurtleScripts", "ScriptRunner", "/CodeDelivery/startupBase.lua"}
 
 for key, filename in pairs(files) do
   fs.copy(filename, "/disk/" .. filename)
