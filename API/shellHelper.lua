@@ -10,10 +10,11 @@ local function new(shell)
       print("set alias: ", command)
       shell.setAlias(command, "/TurtleScripts/" .. filename)
     end
+    
+    shell.setAlias("execute", "/ScriptRunner/execute.lua")
+    print("set alias: ", "execute")
   end
 
-  shell.setAlias("execute", "/ScriptRunner/execute.lua")
-  print("set alias: ", "execute")
 
   return({
     setDefaultAliases = setDefaultAliases
