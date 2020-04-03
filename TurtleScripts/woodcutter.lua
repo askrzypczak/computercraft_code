@@ -13,14 +13,9 @@ if tArgs[1] == "help" then
 
     saplings should be added to slot 2
 
-    the turtle will need an axe. if the current turtle does not, use the command line "woodcutter equip" when an axe is in slot 1]]
+    the turtle will need an axe. if the current turtle does not, use the command "equip <slot> right"]]
   )
 
-  return
-end
-if tArgs[1] == "equip" then
-  turtle.select(1)
-  if turtle.equipRight() then print "equiped!" else print "equip failed" end
   return
 end
 

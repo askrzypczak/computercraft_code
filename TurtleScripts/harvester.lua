@@ -19,17 +19,12 @@ if #tArgs == 0 or tArgs[1] == "help" then
 
     grass seeds should be placed in slot 2.
 
-    the turtle will need a hoe. if the current turtle does not, use the command line "harvester equip" when a hoe is in slot 1
+    the turtle will need a hoe. if the current turtle does not, use the command "equip <slot> right"
 
     maintenance: you will need to periodically remove seeds from the inventory, as it will never drop them
     ]]
   )
 
-  return
-end
-if tArgs[1] == "equip" then
-  turtle.select(1)
-  if turtle.equipRight() then print "equiped!" else print "equip failed" end
   return
 end
 

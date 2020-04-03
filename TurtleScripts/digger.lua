@@ -14,17 +14,12 @@ if #tArgs == 0 or tArgs[1] == "help" then
 
     If the bot does run out of fuel, you will need to add more fuel to slot 1.
 
-    To equip a diamond pick, use the command "digger equip"
+    To equip a diamond pick, use the command "equip <slot> right"
     ]]
   )
   return
 end
 
-if tArgs[1] == "equip" then
-  turtle.select(1)
-  if turtle.equipRight() then print "equiped!" else print "equip failed" end
-  return
-end
 
 local xTarget, yTarget, zTarget = tonumber(tArgs[1]) or 0, tonumber(tArgs[2]) or 0, tonumber(tArgs[3]) or 0
 print("target: ", xTarget, yTarget, zTarget)
