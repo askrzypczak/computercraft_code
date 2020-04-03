@@ -105,22 +105,32 @@ local function moveToBackwards(targetX, targetY, targetZ, callbacks)
   moveX(targetX - x, callbacks)
 end
 
+
+local function getSigns(...)
+  local args = {...}
+  for i, val in pairs(args) do
+    if val > 0 then args[i] = 1 else args[i] = -1 end
+  end
+  return table.unpack(args)
+end
+local function getMagnitude(...)
+  local args = {...}
+  for i, val in pairs(args) do
+    args[i] = math.abs(val)
+  end
+  return table.unpack(args)
+end
+
 --the bot will occupy every space in the cube decribed by the bots current position and the end of the vector.
 local function coverMove(xVector, yVector, zVector, callbacks)
 
-  local xSign, ySign ,zSign
-  if xVector > 0 then xSign = 1 else xSign = -1 end
-  if yVector > 0 then ySign = 1 else ySign = -1 end
-  if zVector > 0 then zSign = 1 else zSign = -1 end
-
-  local xMagnitude = math.abs(xVector)
-  local yMagnitude = math.abs(yVector)
-  local zMagnitude = math.abs(zVector)
+  local xSign, ySign, zSign = getSigns(xVector, yVector, zVector)
+  local xMagnitude, yMagnitude, zMagnitude = getMagnitude(xVector, yVector, zVector)
 
   for zCount = 0, zMagnitude do
     for yCount = 0, yMagnitude do
 
-      moveX(xSign * (xMagnitude), callbacks)
+      moveX(xSign * xMagnitude, callbacks)
 
       if yCount < yMagnitude then
         xSign = xSign * -1
@@ -141,14 +151,8 @@ end
 --once this function is properly tested, will need to generalize it and use it to replace coverMove
 local function observeMove(xVector, yVector, zVector, callbacks)
 
-  local xSign, ySign ,zSign
-  if xVector > 0 then xSign = 1 else xSign = -1 end
-  if yVector > 0 then ySign = 1 else ySign = -1 end
-  if zVector > 0 then zSign = 1 else zSign = -1 end
-
-  local xMagnitude = math.abs(xVector)
-  local yMagnitude = math.abs(yVector)
-  local zMagnitude = math.abs(zVector)
+  local xSign, ySign, zSign = getSigns(xVector, yVector, zVector)
+  local xMagnitude, yMagnitude, zMagnitude = getMagnitude(xVector, yVector, zVector)
 
   local zMax = math.max(z, z + zVector)
   local zMin = math.min(z, z + zVector)
@@ -167,7 +171,7 @@ local function observeMove(xVector, yVector, zVector, callbacks)
     end
   end
 
-  local function yLoop()
+  local function planeLoop()
     for yCount = 0, yMagnitude do
       xLoop()
       if yCount < yMagnitude then
@@ -176,9 +180,9 @@ local function observeMove(xVector, yVector, zVector, callbacks)
       end
     end
   end
+  
   for zCount = 0, zMagnitude, 3 do
-    
-    yLoop()
+    planeLoop()
     if zCount < zMagnitude then
       ySign = ySign * -1
       xSign = xSign * -1
@@ -194,7 +198,7 @@ local function observeMove(xVector, yVector, zVector, callbacks)
   end
 
   if ((z-1) > zMin or (z+1) < zMax) then
-    yLoop()
+    planeLoop()
   end
 end
 
