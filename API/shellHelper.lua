@@ -13,6 +13,9 @@ local function new(shell)
     
     shell.setAlias("execute", "/ScriptRunner/execute.lua")
     print("set alias: ", "execute")
+    
+    shell.setAlias("do", "/ScriptRunner/do.lua")
+    print("set alias: ", "do")
   end
 
 
