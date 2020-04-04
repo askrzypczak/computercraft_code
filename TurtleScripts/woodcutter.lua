@@ -61,7 +61,6 @@ end
 local movement = dofile("API/movement.lua").movement
 local inventory = dofile("API/inventory.lua").new({range={startIndex=4, endIndex=16}})
 local fuel = dofile("API/refuel.lua").new(inventory, {fuelSlot = 1})
-local recovery = dofile("/API/recovery.lua").recovery
 
 
 local function woodcut(direction)
@@ -101,7 +100,6 @@ local function plant()
   end
 end
 
-recovery.unSetRecoverable()
 movement.moveTo(1, 0, 0, {fuel.checkAndRefuel})
 
 local xTarget, yTarget = xRepeat * patternX, yRepeat * patternY
@@ -119,4 +117,3 @@ movement.coverMove(xTarget, yTarget, 0, {plant, fuel.checkAndRefuel})
 movement.moveToBackwards(0, 0, 1, {woodcut, fuel.checkAndRefuel})
 movement.moveToBackwards(0, 0, 0, {woodcut, fuel.checkAndRefuel})
 movement.faceDir(0)
-recovery.setRecoverable()

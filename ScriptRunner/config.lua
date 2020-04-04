@@ -3,5 +3,11 @@
 return{
   commands={
     --put shell commands here
+    "do something",
+    "do something",
+    "do something",
+    "do something",
+    "do something",
+    "do something"
   }
 }

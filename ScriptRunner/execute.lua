@@ -37,7 +37,7 @@ local function new(_shell, ops)
   }
 end
 
---true if this is a top level exeuction, false in dofile() context
+--true if this is a top level execution, false in dofile() context
 if shell then
   new(shell).run()
 end

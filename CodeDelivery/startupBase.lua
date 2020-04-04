@@ -9,7 +9,7 @@ local recovery = dofile("/API/recovery.lua").recovery
 shellHelper.setDefaultAliases()
 
 if recovery.checkRecoveryAllowed() then
-  recovery.executeRecoveryMethod()
+  recovery.recover(shell)
 else
   execute.run()
 end

@@ -1,5 +1,5 @@
-
 local tArgs = {...}
+
 if tArgs[1] == "help" then
   print([[allows for "do ... then ... then ... " shell command chains
     also for "do ... every <number of seconds>"
@@ -10,10 +10,13 @@ if tArgs[1] == "help" then
   return
 end
 
+local recovery = dofile("/API/recovery.lua").recovery
+
 local function new(_shell, _tArgs)
 
   if not _shell then error("missing shell dependency") end
   if not _tArgs then error("no arguments provided") end
+
 
   local commandList = {}
   local loopList = {}
@@ -88,12 +91,33 @@ local function new(_shell, _tArgs)
       _shell.run(table.unpack(shellArgs))
     end
     if waitDuration then
+      
+      local recoverCommand = "do"
+      for i, commands in pairs(loopList) do
+        for j, shellArg in pairs(commands) do
+          recoverCommand = recoverCommand .. " " .. shellArg
+        end
+
+        if i < #loopList then
+          recoverCommand = recoverCommand .. " then"
+        else
+          recoverCommand = recoverCommand .. " every " .. waitDuration
+        end
+      end
+      print("recovery command: ", recoverCommand)
+
+      recovery.generateRecoveryFile(recoverCommand)
+
       while true do
+        --wait first so that we start a recovery by waiting
+        recovery.recoveryBlock(function() os.sleep(waitDuration) end)
         for i, shellArgs in pairs(loopList) do
           _shell.run(table.unpack(shellArgs))
         end
-        os.sleep(waitDuration)
       end
+
+
+
     end
   end
 
