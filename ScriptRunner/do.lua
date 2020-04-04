@@ -104,7 +104,6 @@ local function new(_shell, _tArgs)
           recoverCommand = recoverCommand .. " every " .. waitDuration
         end
       end
-      print("recovery command: ", recoverCommand)
 
       recovery.generateRecoveryFile(recoverCommand)
 
