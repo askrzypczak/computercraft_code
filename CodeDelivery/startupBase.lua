@@ -4,6 +4,12 @@ local execute = dofile("/ScriptRunner/execute.lua").new(shell, {
   filename = "/ScriptRunner/startupConfig.lua",
   silent = true
 })
+local recovery = dofile("/API/recovery.lua").recovery
 
 shellHelper.setDefaultAliases()
-execute.run()
+
+if recovery.checkRecoveryAllowed() then
+  recovery.executeRecoveryMethod()
+else
+  execute.run()
+end
