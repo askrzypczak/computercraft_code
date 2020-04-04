@@ -48,10 +48,8 @@ local function new(_shell, _tArgs)
       error "cannot follow an operator with another one"
 
     elseif arg == "and" then
-      if hitAnd then
-        dumpCurrentCommands()
-        dumpLoop()
-      end
+      dumpCurrentCommands()
+      dumpLoop()
       hitAnd = true
       expectThen = true
 
