@@ -6,20 +6,35 @@ if not fs.exists("/API/recoveryData") then
   fs.makeDir("/API/recoveryData")
 end
 
-local recoverConfigFilename = "/API/recoveryData/recoverConfig.lua"
+local recoverFlagFile = "/API/recoveryData/recoverFlag.lua"
+local recoverProgressFile = "/API/recoveryData/recoverFlag.lua"
 local recoverCommandsFilename = "/API/recoveryData/recoverCommands.lua"
 
 local function setRecoverable()
-  local handle, err = io.open(recoverConfigFilename, "w")
+  local handle, err = io.open(recoverFlagFile, "w")
   if err then error(err) end
   handle:write("return {recoverable=true}")
   handle:close()
 end
 
 local function unSetRecoverable()
-  local handle, err = io.open(recoverConfigFilename, "w")
+  local handle, err = io.open(recoverFlagFile, "w")
   if err then error(err) end
   handle:write("return {recoverable=false}")
+  handle:close()
+end
+
+local function setRecoverProgress()
+  local handle, err = io.open(recoverProgressFile, "w")
+  if err then error(err) end
+  handle:write("return {inRecovery=true}")
+  handle:close()
+end
+
+local function startupInit()
+  local handle, err = io.open(recoverProgressFile, "w")
+  if err then error(err) end
+  handle:write("return {inRecovery=false}")
   handle:close()
 end
 
@@ -30,9 +45,15 @@ local function recoveryBlock(action)
 end
 
 local function checkRecoveryAllowed()
-  if fs.exists(recoverConfigFilename) then
-    local config = dofile(recoverConfigFilename)
+  if fs.exists(recoverFlagFile) then
+    local config = dofile(recoverFlagFile)
     return config.recoverable
+  end
+end
+local function checkInRecovery()
+  if fs.exists(recoverProgressFile) then
+    local config = dofile(recoverProgressFile)
+    return config.inRecovery
   end
 end
 
@@ -64,6 +85,7 @@ local function recover(_shell)
     print "no recovery file available"
     return false
   else
+    setRecoverProgress()
     local execute = dofile("/ScriptRunner/execute.lua").new(_shell, {
       filename = recoverCommandsFilename,
       silent = true
@@ -79,6 +101,8 @@ return {
     recoveryBlock = recoveryBlock,
     generateRecoveryFile = generateRecoveryFile,
     recover = recover,
-    checkRecoveryAllowed = checkRecoveryAllowed
+    checkRecoveryAllowed = checkRecoveryAllowed,
+    startupInit = startupInit,
+    checkInRecovery = checkInRecovery
   }
 }

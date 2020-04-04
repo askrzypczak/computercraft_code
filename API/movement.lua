@@ -197,7 +197,13 @@ local function observeMove(xVector, yVector, zVector, callbacks)
     end
   end
 
-  if ((z-1) > zMin or (z+1) < zMax) then
+  local lastPass
+  if zSign == 1 then
+    lastPass = (z+1) < zMax
+  else
+    lastPass = (z-1) > zMin
+  end
+  if lastPass then
     planeLoop()
   end
 end

@@ -73,33 +73,25 @@ local function harvest()
   end
 end
 
-local function waitForGrowth()
-  os.sleep(24 * 60)
-end
 
-while true do
-  print "harvesting..."
-  movement.moveTo(startX, startY, startZ, {fuel.checkAndRefuel})
+print "harvesting..."
+movement.moveTo(startX, startY, startZ, {fuel.checkAndRefuel})
 
 
-  local xTarget, yTarget = endX - startX, endY - startY
+local xTarget, yTarget = endX - startX, endY - startY
 
-  movement.coverMove(xTarget, yTarget, 1, {harvest, fuel.checkAndRefuel})
-  harvest() --last block will be the endpoint, callbacks wont be called after move, only before.
+movement.coverMove(xTarget, yTarget, 1, {harvest, fuel.checkAndRefuel})
+harvest() --last block will be the endpoint, callbacks wont be called after move, only before.
 
-  print "done!"
-  movement.moveTo(startX, startY, startZ, {fuel.checkAndRefuel})
-  movement.moveToBackwards(0, 0, 0, {fuel.checkAndRefuel})
-  movement.faceDir(0)
+print "done!"
+movement.moveTo(startX, startY, startZ, {fuel.checkAndRefuel})
+movement.moveToBackwards(0, 0, 0, {fuel.checkAndRefuel})
+movement.faceDir(0)
 
-  print "dumping items"
-  inventory.onEachInventory(
-    function(i, inventoryItem)
-      turtle.select(i)
-      turtle.dropDown()
-    end
-  )
-
-  print "waiting for growth..."
-  waitForGrowth()
-end
+print "dumping items"
+inventory.onEachInventory(
+  function(i, inventoryItem)
+    turtle.select(i)
+    turtle.dropDown()
+  end
+)

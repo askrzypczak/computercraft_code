@@ -85,6 +85,7 @@ local function dig(direction)
   return handled
 end
 
-movement.observeMove(xTarget, yTarget, zTarget, {dig, fuel.checkAndFillLavaBucket, fuel.checkAndRefuel})
-movement.moveToBackwards(0, 0, 0, {fuel.checkAndRefuel})
+local moveActions = {dig, fuel.checkAndFillLavaBucket, fuel.checkAndRefuel}
+movement.observeMove(xTarget, yTarget, zTarget, moveActions)
+movement.moveToBackwards(0, 0, 0, moveActions)
 movement.faceDir(0)

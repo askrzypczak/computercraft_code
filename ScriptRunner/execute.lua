@@ -4,7 +4,7 @@
 local function new(_shell, ops)
 
   local silent = ops and ops.silent
-  local filename = ops and ops.filename or "/ScriptRunner/config.lua"
+  local filename = ops and ops.filename or "/Config/config.lua"
 
   if not _shell then error("missing shell dependency") end
 

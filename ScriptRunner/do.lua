@@ -107,12 +107,14 @@ local function new(_shell, _tArgs)
 
       recovery.generateRecoveryFile(recoverCommand)
 
-      while true do
-        --wait first so that we start a recovery by waiting
+      if recovery.checkInRecovery() then
         recovery.recoveryBlock(function() os.sleep(waitDuration) end)
+      end
+      while true do
         for i, shellArgs in pairs(loopList) do
           _shell.run(table.unpack(shellArgs))
         end
+        recovery.recoveryBlock(function() os.sleep(waitDuration) end)
       end
 
     end

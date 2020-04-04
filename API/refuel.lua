@@ -91,7 +91,7 @@ local function checkAndRefuel()
           print(string.format("using %s as fuel", fuelDetail.name))
         end
 
-        turtle.refuel()
+        turtle.refuel(1)
       end
     end)
   end

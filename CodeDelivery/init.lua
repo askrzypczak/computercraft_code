@@ -3,7 +3,7 @@ print "installing package"
 local setDefaultAliases = dofile("/disk/API/shellHelper.lua").new(shell).setDefaultAliases
 
 --os will throw error if you try to delete these, and thats correct
-local protectedFiles = {"disk", "rom"}
+local protectedFiles = {"disk", "rom", "Config"}
 
 --do a clean install, deleting everything
 for i, filename in pairs(fs.list("/")) do
@@ -30,6 +30,10 @@ if fs.exists("/startup") then
   fs.delete("/startup")
 end
 fs.copy(startup, "/startup")
+
+if not fs.exists("/Config") then
+  fs.copy("/disk/Config", "/Config")
+end
 
 
 setDefaultAliases()
