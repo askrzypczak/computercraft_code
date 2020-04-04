@@ -22,12 +22,10 @@ local function new(_shell, ops)
     if shellCommands == nil and not silent then print "no commands" end
 
     for i, command in pairs(shellCommands) do
-      if type(command) == "table" then
-        _shell.run(table.unpack(command))
-      elseif type(command) == "string" then
+      if type(command) == "string" then
         _shell.run(command)
       else
-        error("command must be either a table of strings or a string, to be passed into shell.run()")
+        error("command must be a string, to be passed into shell.run()")
       end
     end
   end
