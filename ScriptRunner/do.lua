@@ -88,7 +88,7 @@ local function new(_shell, _tArgs)
 
   local function run()
     for i, shellArgs in pairs(commandList) do
-      _shell.run(table.unpack(shellArgs))
+      if not _shell.run(table.unpack(shellArgs)) then error("shell failed") end
     end
     if waitDuration then
       
@@ -112,7 +112,7 @@ local function new(_shell, _tArgs)
       end
       while true do
         for i, shellArgs in pairs(loopList) do
-          _shell.run(table.unpack(shellArgs))
+          if not _shell.run(table.unpack(shellArgs)) then error("shell failed") end
         end
         recovery.recoveryBlock(function() os.sleep(waitDuration) end)
       end

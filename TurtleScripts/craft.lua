@@ -36,25 +36,24 @@ local function dump(dir, itemName)
   )
 end
 
-while true do
-  print("crafting")
-  dump(inputDir)
-  local amount = getInput()
-  local success = false
-  if amount > #pattern then
-    for i, item in pairs(pattern) do
-      local currentItem = turtle.getItemDetail()
-      if currentItem and currentItem.name == item then
-        turtle.transferTo(i, math.floor(amount / #pattern))
-      else break end
-    end
-    success = turtle.craft()
-    if success then dump(outputDir, output) end
-    if not success then
-      dump(outputDir, output)
-      dump(inputDir, input)
-      dump(garbageDir)
-      os.sleep(5)
-    end
-  else os.sleep(15) end
+print("crafting")
+dump(inputDir)
+local amount = getInput()
+local success = false
+if amount > #pattern then
+  for i, item in pairs(pattern) do
+    local currentItem = turtle.getItemDetail()
+    if currentItem and currentItem.name == item then
+      turtle.transferTo(i, math.floor(amount / #pattern))
+    else break end
+  end
+  success = turtle.craft()
+  if success then dump(outputDir, output) end
+  if not success then
+    dump(outputDir, output)
+    dump(inputDir, input)
+    dump(garbageDir)
+  end
 end
+
+movement.faceDir(0)

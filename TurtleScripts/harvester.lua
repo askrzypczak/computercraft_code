@@ -80,7 +80,7 @@ movement.moveTo(startX, startY, startZ, {fuel.checkAndRefuel})
 
 local xTarget, yTarget = endX - startX, endY - startY
 
-movement.coverMove(xTarget, yTarget, 1, {harvest, fuel.checkAndRefuel})
+movement.coverMove(xTarget, yTarget, 0, {harvest, fuel.checkAndRefuel})
 harvest() --last block will be the endpoint, callbacks wont be called after move, only before.
 
 print "done!"

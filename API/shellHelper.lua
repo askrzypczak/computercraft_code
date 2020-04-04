@@ -8,8 +8,12 @@ local function new(shell)
     local function findScripts(dirname)
       for i, filename in pairs(fs.list(dirname)) do
         local command = string.match(filename, "(.*)%.lua$")
-        print("set alias: ", command)
-        shell.setAlias(command, "/TurtleScripts/" .. filename)
+        if command then
+          print("set alias: ", command)
+          shell.setAlias(command, "/TurtleScripts/" .. filename)
+        else 
+          print("could not set alias for file", filename)
+        end
       end
     end
 

@@ -53,7 +53,9 @@ local digSlot = 3
 
 local digItem = turtle.getItemDetail(digSlot)
 if digItem ~= nil then
-  error(string.format("cutting slot is not empty! (slot %i)", digSlot))
+  print(string.format("cutting slot is not empty! (slot %i)", digSlot))
+  turtle.select(digSlot)
+  turtle.drop()
 end
 
 

@@ -23,7 +23,7 @@ local function new(_shell, ops)
 
     for i, command in pairs(shellCommands) do
       if type(command) == "string" then
-        _shell.run(command)
+          if not _shell.run(command) then error("shell failed") end
       else
         error("command must be a string, to be passed into shell.run()")
       end
