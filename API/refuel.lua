@@ -70,7 +70,7 @@ local function checkAndRefuel()
         end
       end
       -- check rest of inventory for fuel
-      if turtle.getItemDetail() == nil then
+      if turtle.getItemDetail() == nil and fuelType then
         inventory.onEachInventory(function(i, item)
           if item.name == fuelType then
             turtle.select(i)
@@ -107,10 +107,11 @@ local function new(_inventory, ops)
   turtle.select(fuelSlot)
   local fuelItem = turtle.getItemDetail(fuelSlot)
   if fuelItem == nil or not turtle.refuel(0) then
-    error(string.format("no fuel item provided in slot %i", fuelSlot))
+    print(string.format("no fuel item provided in slot %i", fuelSlot))
+  else
+    print(string.format("using %s as fuel", fuelItem.name))
+    fuelType = fuelItem.name
   end
-  print(string.format("using %s as fuel", fuelItem.name))
-  fuelType = fuelItem.name
 
   if fuelBucketSlot then
     turtle.select(fuelBucketSlot)

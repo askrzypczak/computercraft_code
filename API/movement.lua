@@ -51,16 +51,28 @@ local function forward()
   end
 end
 
+local function backward()
+  if turtle.back() then
+    if face == front then x = x - 1
+    elseif face == right then y = y - 1
+    elseif face == back then x = x + 1
+    elseif face == left then y = y + 1
+    end
+  else print "error moving backward!"
+  end
+end
+
+
 local function invokeCallbacks(callbacks, face)
   if callbacks then
     for i, callback in pairs(callbacks) do callback(face) end
   end
 end
 
-local function createMovementFunction(faceIfGreater, faceIfLesser, getCoord)
+local function createMovementFunction(faceIfGreater, faceIfLesser, getCoord, backwards)
   local function movementFunction(dist, callbacks)
     local goal = getCoord() + dist
-
+    
     if dist > 0 then
       faceDir(faceIfGreater)
     elseif dist < 0 then
@@ -69,7 +81,11 @@ local function createMovementFunction(faceIfGreater, faceIfLesser, getCoord)
     if dist ~= 0 then
       while getCoord() ~= goal do
         invokeCallbacks(callbacks)
-        forward()
+        if backwards then
+          backward()
+        else
+          forward()
+        end
       end
     end
   end
@@ -79,6 +95,8 @@ end
 
 local moveX = createMovementFunction(front, back, function() return x end)
 local moveY = createMovementFunction(right, left, function() return y end)
+local moveXBackward = createMovementFunction(back, front, function() return x end, true)
+local moveYBackward = createMovementFunction(left, right, function() return y end, true)
 
 local function moveZ(dist, callbacks)
   local goal = z + dist
@@ -222,6 +240,8 @@ return {
     moveX = moveX,
     moveY = moveY,
     moveZ = moveZ,
+    moveXBackward = moveXBackward,
+    moveYBackward = moveYBackward,
     moveTo = moveTo,
     moveToBackwards = moveToBackwards,
     coverMove = coverMove,

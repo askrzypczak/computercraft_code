@@ -3,15 +3,17 @@ local tArgs = {...}
 print "initializing..."
 if #tArgs == 0 or tArgs[1] == "help" then
   textutils.pagedPrint(
-    [[usage: Provide 2 arguments: repeatAmount, placeDirection
+    [[usage: Provide 3 arguments: repeatAmount, placeDirection
 
     repeatAmount: int
       the turtle will move forward <repeatAmount> times, 
        each time digging in front and placing a block in the chosen direction
 
-    placeDirection: [up|down|left|right]
+    placeDirection: [up|down|left|right|back]
       the turtle will place a block in the chosen direction
+      back means the turltle will face the opposite direction when placing
     ]]
+    
   )
   return
 end
@@ -42,19 +44,22 @@ local function place()
 
   turtle.select(placeSlot)
 
-  if placeDirection == "up" then 
+  if placeDirection == "up" then
     digger.dig("up")
     turtle.placeUp()
-  elseif placeDirection == "down" then 
+  elseif placeDirection == "down" then
     digger.dig("down")
     turtle.placeDown()
-  elseif placeDirection == "left" then 
+  elseif placeDirection == "left" then
     movement.faceDir(movement.left)
     digger.dig()
     turtle.place()
   elseif placeDirection == "right" then
     movement.faceDir(movement.right)
     digger.dig()
+    turtle.place()
+  elseif placeDirection == "back" and movement.getX() > 0 then
+    movement.faceDir(movement.back)
     turtle.place()
   end
   movement.faceDir(movement.front)
