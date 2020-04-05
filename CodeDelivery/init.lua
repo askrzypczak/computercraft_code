@@ -2,7 +2,7 @@ print "installing package"
 
 local setDefaultAliases = dofile("/disk/API/shellHelper.lua").new(shell).setDefaultAliases
 
---os will throw error if you try to delete these, and thats correct
+--os will throw error if you try to delete rom and disk, and thats correct
 local protectedFiles = {"disk", "rom", "Config"}
 
 --do a clean install, deleting everything
