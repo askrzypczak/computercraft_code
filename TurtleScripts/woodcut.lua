@@ -119,7 +119,7 @@ movement.coverMove(xTarget, yTarget, 0, {plant, fuel.checkAndRefuel})
 movement.moveToBackwards(0, 0, 1, {woodcut, fuel.checkAndRefuel})
 movement.moveToBackwards(0, 0, 0, {woodcut, fuel.checkAndRefuel})
 
-movement.faceDir(2)
+movement.faceDir(movement.back)
 print "dumping items"
 inventory.onEachInventory(
   function(i, inventoryItem)
@@ -127,4 +127,4 @@ inventory.onEachInventory(
     turtle.drop()
   end
 )
-movement.faceDir(0)
+movement.faceDir(movement.front)

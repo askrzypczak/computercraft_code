@@ -86,7 +86,7 @@ harvest() --last block will be the endpoint, callbacks wont be called after move
 print "done!"
 movement.moveTo(startX, startY, startZ, {fuel.checkAndRefuel})
 movement.moveToBackwards(0, 0, 0, {fuel.checkAndRefuel})
-movement.faceDir(0)
+movement.faceDir(movement.front)
 
 print "dumping items"
 inventory.onEachInventory(

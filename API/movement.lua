@@ -5,6 +5,8 @@ local function getX() return x end
 local function getY() return y end
 local function getZ() return z end
 
+local front, right, back, left = 0, 1, 2, 3
+
 local function up()
   if turtle.up() then z = z + 1
   else print "error moving up!"
@@ -40,10 +42,10 @@ end
 
 local function forward()
   if turtle.forward() then
-    if face == 0 then x = x + 1
-    elseif face == 1 then y = y + 1
-    elseif face == 2 then x = x - 1
-    elseif face == 3 then y = y - 1
+    if face == front then x = x + 1
+    elseif face == right then y = y + 1
+    elseif face == back then x = x - 1
+    elseif face == left then y = y - 1
     end
   else print "error moving forward!"
   end
@@ -210,6 +212,10 @@ end
 
 return {
   movement = {
+    front = front,
+    back = back,
+    left = left,
+    right = right,
     getX = getX,
     getY = getY,
     getZ = getZ,

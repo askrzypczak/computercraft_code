@@ -6,7 +6,7 @@ local pattern = {
 }
 
 local input, output = "minecraft:wheat", "minecraft:bread"
-local inputDir, outputDir, garbageDir = 0, 2, 3
+local inputDir, outputDir, garbageDir = movement.front, movement.back, movement.left
 
 local function getInput()
   repeat
@@ -56,4 +56,4 @@ if amount > #pattern then
   end
 end
 
-movement.faceDir(0)
+movement.faceDir(movement.front)
