@@ -77,8 +77,8 @@ local function createMovementFunction(faceIfGreater, faceIfLesser, getCoord)
   return movementFunction
 end
 
-local moveX = createMovementFunction(0, 2, function() return x end)
-local moveY = createMovementFunction(1, 3, function() return y end)
+local moveX = createMovementFunction(front, back, function() return x end)
+local moveY = createMovementFunction(right, left, function() return y end)
 
 local function moveZ(dist, callbacks)
   local goal = z + dist

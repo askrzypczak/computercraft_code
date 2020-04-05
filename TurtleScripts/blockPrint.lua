@@ -17,13 +17,13 @@ if #tArgs == 0 or tArgs[1] == "help" then
 end
 
 
-local repeatAmount, placeDirection = tonumber(tArgs[0]), tArgs[1]
+local repeatAmount, placeDirection = tonumber(tArgs[1]), tArgs[2]
 
 
-local movement = dofile("API/movement.lua").movement
-local inventory = dofile("API/inventory.lua").new({range={startIndex=3, endIndex=16}})
-local fuel = dofile("API/refuel.lua").new(inventory, {fuelSlot = 1})
-local digger = dofile("API/digger.lua").new(inventory, fuel, {dropAll = true, digSlot = 2})
+local movement = dofile("/API/movement.lua").movement
+local inventory = dofile("/API/inventory.lua").new({range={startIndex=3, endIndex=16}})
+local fuel = dofile("/API/refuel.lua").new(inventory, {fuelSlot = 1})
+local digger = dofile("/API/digger.lua").new(inventory, fuel, {dropAll = true, digSlot = 2})
 
 local function place()
 
@@ -43,14 +43,18 @@ local function place()
   turtle.select(placeSlot)
 
   if placeDirection == "up" then 
+    digger.dig("up")
     turtle.placeUp()
   elseif placeDirection == "down" then 
+    digger.dig("down")
     turtle.placeDown()
   elseif placeDirection == "left" then 
     movement.faceDir(movement.left)
+    digger.dig()
     turtle.place()
   elseif placeDirection == "right" then
     movement.faceDir(movement.right)
+    digger.dig()
     turtle.place()
   end
   movement.faceDir(movement.front)

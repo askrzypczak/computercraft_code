@@ -91,7 +91,9 @@ movement.faceDir(movement.front)
 print "dumping items"
 inventory.onEachInventory(
   function(i, inventoryItem)
-    turtle.select(i)
-    turtle.dropDown()
+    if i ~= seedSlot then
+      turtle.select(i)
+      turtle.dropDown()
+    end
   end
 )
