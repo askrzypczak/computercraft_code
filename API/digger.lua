@@ -1,4 +1,11 @@
 
+local function isComputerItem(item)
+  if item then
+    return string.find(item.name, "computercraft") ~= nil
+  else return false end
+end
+  
+
 local function new(inventory, fuel, ops)
   if not inventory then error "missing inventory dependency" end
   if not fuel then error "missing fuel dependency" end
@@ -19,15 +26,19 @@ local function new(inventory, fuel, ops)
   local function dig(direction)
     local handled = false
 
-    local blockDetect
+    local blockDetect, blockItem
     if not direction or direction == "forward" then
-      blockDetect = turtle.detect()
+      blockDetect, blockItem = turtle.inspect()
     elseif direction == "up" then
-      blockDetect = turtle.detectUp()
+      blockDetect, blockItem = turtle.inspectUp()
     elseif direction == "down" then
-      blockDetect = turtle.detectDown()
+      blockDetect, blockItem = turtle.inspectDown()
     end
     if blockDetect then
+      if isComputerItem(blockItem) then
+        print "will not dig computer!"
+        return false
+      end
       inventory.actOnSlot(digSlot, function()
 
         local digSuccess
