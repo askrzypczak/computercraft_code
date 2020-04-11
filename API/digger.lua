@@ -39,41 +39,41 @@ local function new(inventory, fuel, ops)
         print "will not dig computer!"
         return false
       end
-      inventory.actOnSlot(digSlot, function()
+      --not actOnSlot for performance reasons
+      turtle.select(digSlot)
 
-        local digSuccess
-        if not direction or direction == "forward" then
-          digSuccess = turtle.dig()
-        elseif direction == "up" then
-          digSuccess = turtle.digUp()
-        elseif direction == "down" then
-          digSuccess = turtle.digDown()
+      local digSuccess
+      if not direction or direction == "forward" then
+        digSuccess = turtle.dig()
+      elseif direction == "up" then
+        digSuccess = turtle.digUp()
+      elseif direction == "down" then
+        digSuccess = turtle.digDown()
+      end
+
+      if digSuccess then
+        local digDetail = turtle.getItemDetail()
+        if digDetail and not whitelistItems[digDetail.name] and (blacklistItems[digDetail.name] or dropAll) then
+          turtle.drop()
+          handled = true
         end
-
-        if digSuccess then
-          local digDetail = turtle.getItemDetail()
-          if digDetail and not whitelistItems[digDetail.name] and (blacklistItems[digDetail.name] or dropAll) then
-            turtle.drop()
+        if not handled then
+          if digDetail == fuel.getFuelType() and turtle.getItemSpace(fuel.getFuelSlot()) > 0 then
+            turtle.transferTo(fuel.getFuelSlot())
             handled = true
-          end
-          if not handled then
-            if digDetail == fuel.getFuelType() and turtle.getItemSpace(fuel.getFuelSlot()) > 0 then
-              turtle.transferTo(fuel.getFuelSlot())
-              handled = true
-            else
-              inventory.onEachInventorySlot(
-                function (i)
-                  if turtle.transferTo(i) then
-                    handled = true
-                    return true
-                  end
+          else
+            inventory.onEachInventorySlot(
+              function (i)
+                if turtle.transferTo(i) then
+                  handled = true
+                  return true
                 end
-              )
-            end
-            if not handled then turtle.drop() end
+              end
+            )
           end
+          if not handled then turtle.drop() end
         end
-      end)
+      end
     end
     return handled
   end

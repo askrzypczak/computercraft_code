@@ -31,7 +31,12 @@ local blacklistItems = {
   ["minecraft:gravel"] = true,
   ["minecraft:diorite"] = true,
   ["minecraft:andesite"] = true,
-  ["minecraft:granite"] = true
+  ["minecraft:granite"] = true,
+  ["embellishcraft:slate_cobblestone"] = true,
+  ["embellishcraft:marble_cobblestone"] = true,
+  ["embellishcraft:larvikite_cobblestone"] = true,
+  ["embellishcraft:gneiss_cobblestone"] = true,
+  ["mapperbase:raw_bitumen"] = true
 }
 
 local movement = dofile("API/movement.lua").movement
